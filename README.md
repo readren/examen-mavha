@@ -20,4 +20,4 @@ Utilizar JPA
 Utilizar la DB en memoria hsqldb
 Deploy en JBOSS o Wildfly o GlassFish
 Armar los Test para el alta y listado con JUNIT
-publicar el proyecto en github o bitbucket y enviar el link por correo a martin.marlatto@mavha.com y maximiliano.mattig@mavha.com
+publicar el proyecto en github o bitbucket y enviar el link por correo.
