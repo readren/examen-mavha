@@ -3,6 +3,7 @@ package mavha.examen.guido.rest;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class PersonaREST {
 	 */
 	private void validarPersona(Persona persona) throws ConstraintViolationException {
 		// Create a bean validator and check for issues.
-		Set<ConstraintViolation<Persona>> violations = validator.validate(persona);
+		final Set<ConstraintViolation<Persona>> violations = validator.validate(persona);
 
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
@@ -106,8 +107,9 @@ public class PersonaREST {
 	 */
 	private Response.ResponseBuilder crearRespuestaRechazo(Set<ConstraintViolation<?>> violations) {
 		log.fine("Violaciones: " + violations);
-		return Response.status(Response.Status.BAD_REQUEST).entity(violations.stream()
-				.collect(Collectors.toMap(v -> v.getPropertyPath().toString(), v -> v.getMessage())));
+		final Map<String, String> mapa = violations.stream().collect(
+				Collectors.toMap(v -> v.getPropertyPath().toString(), v -> v.getMessage(), (a, b) -> a + " " + b));
+		return Response.status(Response.Status.BAD_REQUEST).entity(mapa);
 	}
 
 }

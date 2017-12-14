@@ -19,26 +19,26 @@ import javax.validation.constraints.Size;
 
 public class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private static final String NOMBRES_REGEXP = "[A-Z]?[a-z]+(\\s[A-Z]?[a-z]+)*";
-	private static final String NOMBRES_VIOLACION = "Solo palabras tales que solo la primer letra puede ser mayúscula";
+	private static final String NOMBRES_REGEXP = "[A-Z]?[a-záéíúó]+(\\s[A-Z]?[a-záéíúó]+)*";
+	private static final String NOMBRES_PATTERN_VIOLACION = "Solo palabras tales que solo la primer letra puede ser mayúscula.";
 
 	@Id
-	@Min(value = 1000000, message = "Solo números de 7 u 8 dígitos")
-	@Max(value = 99999999, message = "Solo números de 7 u 8 dígitos")
+	@Min(value = 1000000, message = "Solo números de 7 u 8 dígitos.")
+	@Max(value = 99999999, message = "Solo números de 7 u 8 dígitos.")
 	private long dni;
 
 	@NotNull
-	@Size(min = 1, max = 40)
-	@Pattern(regexp = NOMBRES_REGEXP, message = NOMBRES_VIOLACION)
+	@Size(min = 1, max = 50, message = "El nombre es requerido y tener no mas de 50 letras contando los espacios.")
+	@Pattern(regexp = NOMBRES_REGEXP, message = NOMBRES_PATTERN_VIOLACION)
 	private String nombre;
 
 	@NotNull
-	@Size(min = 1, max = 40)
-	@Pattern(regexp = NOMBRES_REGEXP, message = NOMBRES_VIOLACION)
+	@Size(min = 1, max = 40, message = "El apellido es requerido y tener no mas de 40 letras contando los espacios.")
+	@Pattern(regexp = NOMBRES_REGEXP, message = NOMBRES_PATTERN_VIOLACION)
 	private String apellido;
 
 	@NotNull
-	@Digits(fraction = 0, integer = 3, message = "Solo dígitos, máximo 3")
+	@Digits(fraction = 0, integer = 3, message = "Solo dígitos, máximo 3.")
 	private int edad;
 
 	public Persona() {
