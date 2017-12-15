@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import mavha.examen.guido.service.PersonaService;
 import mavha.examen.guido.service.PersonaService.ErrorValidacion;
 import mavha.examen.guido.service.PersonaService.PersonaCompletaDto;
+import mavha.examen.guido.service.PersonaService.UnicidadDniViolada;
 
 @Path("/persona")
 @RequestScoped
@@ -23,7 +24,7 @@ public class PersonaREST {
 
 	@Inject
 	PersonaService personaService;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<PersonaCompletaDto> listadoTodas() {
@@ -41,11 +42,14 @@ public class PersonaREST {
 			return Response.ok().build();
 		} catch (ErrorValidacion ev) {
 			// Handle validation errors
-			return Response.status(Response.Status.CONFLICT).entity(ev.detalle)
+			return Response.status(Response.Status.FORBIDDEN).entity(ev.detalle).build();
+		} catch (UnicidadDniViolada udv) {
+			// Handle validation errors
+			return Response.status(Response.Status.CONFLICT).entity(Collections.singletonMap("dni", udv.getMessage()))
 					.build();
 		} catch (Exception e) {
 			// Handle generic exceptions
-			return Response.status(Response.Status.BAD_REQUEST)
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(Collections.singletonMap("error", e.getMessage())).build();
 		}
 	}

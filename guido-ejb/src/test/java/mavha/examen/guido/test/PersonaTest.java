@@ -35,7 +35,7 @@ import mavha.examen.guido.data.PersonaRepository;
 import mavha.examen.guido.model.Persona;
 import mavha.examen.guido.service.PersonaService;
 import mavha.examen.guido.service.PersonaService.PersonaCompletaDto;
-import mavha.examen.guido.service.PersonaService.ErrorValidacion;
+import mavha.examen.guido.service.PersonaService.UnicidadDniViolada;
 import mavha.examen.guido.util.Resources;
 
 @RunWith(Arquillian.class)
@@ -78,7 +78,7 @@ public class PersonaTest {
 		assert (listado.size() == 2 && listado.get(0).getDni() == 87654321);
 	}
 
-	@Test(expected = ErrorValidacion.class)
+	@Test(expected = UnicidadDniViolada.class)
 	@InSequence(3)
 	public void testUnicidadDni() throws Exception {
 		PersonaCompletaDto nueva = new PersonaCompletaDto(12345678, "Pepe", "Gomez", 19);

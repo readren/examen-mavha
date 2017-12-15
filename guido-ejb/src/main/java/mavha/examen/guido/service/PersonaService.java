@@ -1,7 +1,6 @@
 package mavha.examen.guido.service;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class PersonaService {
 	private Validator validator;
 
 	@Transactional(value = TxType.REQUIRED)
-	public void agregar(PersonaCompletaDto personaDto) throws ErrorValidacion {
+	public void agregar(PersonaCompletaDto personaDto) throws ErrorValidacion, UnicidadDniViolada {
 		final Persona persona = new Persona(personaDto.dni, personaDto.nombre, personaDto.apellido, personaDto.edad);
 
 		try {
@@ -59,11 +58,11 @@ public class PersonaService {
 			throw new ErrorValidacion(cve.getConstraintViolations().stream().collect(
 					Collectors.toMap(v -> v.getPropertyPath().toString(), v -> v.getMessage(), (a, b) -> a + " " + b)), cve);
 		} catch (EntityExistsException eee) {
-			throw new ErrorValidacion(Collections.singletonMap("DNI",  "Unicidad del DNI violada"), eee);
+			throw new UnicidadDniViolada(eee);
 		} catch (PersistenceException pe) {
 			if (pe.getCause().getClass().getName() == org.hibernate.exception.ConstraintViolationException.class
 					.getName())
-				throw new ErrorValidacion(Collections.singletonMap("DNI",  "Unicidad del DNI violada"), pe); // Dado que DNI es el único campo con constraints
+				throw new UnicidadDniViolada(pe); // Dado que DNI es el único campo con constraints
 			else
 				throw pe;
 		}
@@ -123,6 +122,15 @@ public class PersonaService {
 		public ErrorValidacion(Map<String, String> detalle, Throwable cause) {
 			super("detalle=" + detalle, cause);
 			this.detalle = detalle;
+		}
+	}
+	
+	@ApplicationException(rollback = true)
+	public static class UnicidadDniViolada extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		public UnicidadDniViolada(Throwable cause) {
+			super("Unicidad del DNI violada", cause);
 		}
 	}
 }
