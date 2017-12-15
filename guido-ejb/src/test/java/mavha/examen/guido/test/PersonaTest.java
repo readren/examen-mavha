@@ -33,8 +33,9 @@ import org.junit.runner.RunWith;
 
 import mavha.examen.guido.data.PersonaRepository;
 import mavha.examen.guido.model.Persona;
-import mavha.examen.guido.service.PersonaAlterService;
-import mavha.examen.guido.service.PersonaAlterService.UnicidadDniViolada;
+import mavha.examen.guido.service.PersonaService;
+import mavha.examen.guido.service.PersonaService.PersonaCompletaDto;
+import mavha.examen.guido.service.PersonaService.ErrorValidacion;
 import mavha.examen.guido.util.Resources;
 
 @RunWith(Arquillian.class)
@@ -42,7 +43,7 @@ public class PersonaTest {
 	@Deployment
 	public static Archive<?> createTestArchive() {
 		return ShrinkWrap.create(WebArchive.class, "test.war")
-				.addClasses(Persona.class, PersonaAlterService.class, Resources.class, PersonaRepository.class)
+				.addClasses(Persona.class, PersonaService.class, Resources.class, PersonaRepository.class)
 				.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
 				// Deploy our test datasource
@@ -50,7 +51,7 @@ public class PersonaTest {
 	}
 
 	@Inject
-	PersonaAlterService personaAlterService;
+	PersonaService personaAlterService;
 	@Inject
 	PersonaRepository repo;
 
@@ -60,21 +61,13 @@ public class PersonaTest {
 	@Test
 	@InSequence(1)
 	public void testAgregar() throws Exception {
-		Persona nueva = new Persona();
-		nueva.setDni(12345678);
-		nueva.setNombre("Juan Pablo");
-		nueva.setApellido("Gomez");
-		nueva.setEdad(12);
+		PersonaCompletaDto nueva = new PersonaCompletaDto(12345678, "Juan Pablo", "Gomez", 12);
 		personaAlterService.agregar(nueva);
-		log.info(nueva.getNombre() + " was persisted");
+		log.info(nueva.nombre + " was persisted");
 
-		nueva = new Persona();
-		nueva.setDni(87654321);
-		nueva.setNombre("Adriana");
-		nueva.setApellido("Gomez");
-		nueva.setEdad(15);
+		nueva = new PersonaCompletaDto(87654321, "Adriana", "Gomez", 15);
 		personaAlterService.agregar(nueva);
-		log.info(nueva.getNombre() + " was persisted");
+		log.info(nueva.nombre + " was persisted");
 	}
 
 	@Test
@@ -85,14 +78,10 @@ public class PersonaTest {
 		assert (listado.size() == 2 && listado.get(0).getDni() == 87654321);
 	}
 
-	@Test(expected = UnicidadDniViolada.class)
+	@Test(expected = ErrorValidacion.class)
 	@InSequence(3)
 	public void testUnicidadDni() throws Exception {
-		Persona nueva = new Persona();
-		nueva.setDni(12345678);
-		nueva.setNombre("Pepe");
-		nueva.setApellido("Gomez");
-		nueva.setEdad(11);
+		PersonaCompletaDto nueva = new PersonaCompletaDto(12345678, "Pepe", "Gomez", 19);
 		personaAlterService.agregar(nueva);
 	}
 }

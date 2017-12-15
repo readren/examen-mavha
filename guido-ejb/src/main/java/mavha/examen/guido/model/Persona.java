@@ -38,11 +38,19 @@ public class Persona implements Serializable {
 	private String apellido;
 
 	@NotNull
+	@Min(value = 0, message = "La edad no puede ser negativa")
 	@Digits(fraction = 0, integer = 3, message = "Solo dígitos, máximo 3.")
 	private int edad;
 
 	public Persona() {
 		super();
+	}
+
+	public Persona(long dni, String nombre, String apellido, int edad) {
+		this.dni = dni;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.edad = edad;
 	}
 
 	public long getDni() {
@@ -77,4 +85,28 @@ public class Persona implements Serializable {
 		this.edad = edad;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (dni ^ (dni >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Persona))
+			return false;
+		Persona other = (Persona) obj;
+		if (dni != other.dni)
+			return false;
+		return true;
+	}
+
+
+	
 }

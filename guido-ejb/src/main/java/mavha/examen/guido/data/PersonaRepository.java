@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 
 import mavha.examen.guido.model.Persona;
 
+/** DAO de persona */
 @ApplicationScoped
 public class PersonaRepository {
 

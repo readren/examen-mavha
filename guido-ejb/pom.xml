@@ -61,7 +61,14 @@
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -150,7 +157,7 @@
 					<groupId>org.wildfly</groupId>
 					<artifactId>wildfly-arquillian-container-managed</artifactId>
 					<scope>test</scope>
-					<!-- la exclusion es un workaround de un bug. ver "https://stackoverflow.com/questions/33236195/missing-artifact-sun-jdkjconsolejarjdk"  -->
+					<!-- la exclusion es un workaround de un bug. ver "https://stackoverflow.com/questions/33236195/missing-artifact-sun-jdkjconsolejarjdk" -->
 					<exclusions>
 						<exclusion>
 							<groupId>sun.jdk</groupId>
@@ -162,8 +169,9 @@
 		</profile>
 
 		<profile>
-			<!-- An optional Arquillian testing profile that executes tests in a remote (otro proceso, not necesariamente otra PC).  
-				WildFly instance. The instance should be running. -->
+			<!-- An optional Arquillian testing profile that executes tests in a remote 
+				(otro proceso, not necesariamente otra PC). WildFly instance. The instance 
+				should be running. -->
 			<!-- Run with: mvn clean test -Parq-wildfly-remote -->
 			<id>arq-wildfly-remote</id>
 			<dependencies>
@@ -171,7 +179,7 @@
 					<groupId>org.wildfly</groupId>
 					<artifactId>wildfly-arquillian-container-remote</artifactId>
 					<scope>test</scope>
-					<!-- la exclusion es un workaround de un bug. ver "https://stackoverflow.com/questions/33236195/missing-artifact-sun-jdkjconsolejarjdk"  -->
+					<!-- la exclusion es un workaround de un bug. ver "https://stackoverflow.com/questions/33236195/missing-artifact-sun-jdkjconsolejarjdk" -->
 					<exclusions>
 						<exclusion>
 							<groupId>sun.jdk</groupId>
