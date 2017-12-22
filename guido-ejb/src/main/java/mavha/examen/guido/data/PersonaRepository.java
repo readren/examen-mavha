@@ -17,6 +17,10 @@ public class PersonaRepository {
 
     @Inject
     private EntityManager em;
+    
+    public void  persistir(Persona persona) {
+    	this.em.persist(persona);
+    }
 
     public List<Persona> todasOrdenadasPorApellidoYNombre() {
         CriteriaBuilder cb = em.getCriteriaBuilder();

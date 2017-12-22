@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -30,8 +29,6 @@ import mavha.examen.guido.model.Persona;
 public class PersonaService {
 
 	@Inject
-	private EntityManager em;
-	@Inject
 	private PersonaRepository personaRepository;
 	@Inject
 	private Event<Persona> personaEventSrc;
@@ -45,15 +42,11 @@ public class PersonaService {
 		try {
 			// Validar usando bean validation
 			validarPersona(persona);
-			// persistir en la DB
-			em.persist(persona);
-			// El flush esta para asegurar que la persistencia haya sido exitosa antes de
-			// notificar el evento notificador de persona agregada.
-			em.flush();
-			// Notificar que la persona fue agregada exitosamente (para futuros consumidores
-			// de esta información).
+			// agregar la persona al contexto de persistencia
+			personaRepository.persistir(persona);
+			// Notificar que la persona fue agregada (anque aún pude ser desecho si la transacción no es exitosa. Es el consumidor del evento el responsable de filtrar los casos exitosos indicandolo con {@code @Observes(during=AFTER_SUCCESS)}. 
 			personaEventSrc.fire(persona); // TODO agregar qualifier o wrapper para distinguir qué sucedió con la
-											// persona (alta, baja, modificacion).
+											// persona (alta, baja, o modificacion).
 		} catch (ConstraintViolationException cve) {
 			throw new ErrorValidacion(cve.getConstraintViolations().stream().collect(
 					Collectors.toMap(v -> v.getPropertyPath().toString(), v -> v.getMessage(), (a, b) -> a + " " + b)), cve);
